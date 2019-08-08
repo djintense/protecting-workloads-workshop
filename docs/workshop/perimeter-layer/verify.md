@@ -45,5 +45,4 @@ Here are some sample of metrics that you can use. Starting from top left side, i
 
 ---
 
-This concludes the Perimeter Round.
-You can now procede to the [Host Layer round](/workshop/host-layer/) or if you are finished, [the Cleanup](cleanup.md)
+This concludes the Perimeter Lab
