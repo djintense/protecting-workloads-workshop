@@ -29,9 +29,9 @@ Once selected, you will be redirected to the AWS WAF & AWS Shield service consol
 ![WAF ACL Rules](./images/waf-acl-rules.png)
 Validate that you are able to see a pre-existing rule, configured to block requests, and that your Web ACL is associated with an Application load balancer resource. You can drill down further into the properties of the existing rule, by clicking on the rule name. You should see 2 entries into the associated IP address list for the loopback/localhost IP addresses (127.0.0.0/8, ::1/128).
 
-##AWS WAF Rule Design and Considerations
+**AWS WAF Rule Design and Considerations**
 
-###Basics
+**Basics**
 
 AWS WAF rules consist of conditions. Conditions are lists of specific filters (patterns) that are being matched against the HTTP request components processed by AWS WAF. The filters, including their attributes, are specific to the type of condition supported by AWS WAF. A condition, as a whole, is considered as _matched_, if any one of the listed filters is matched.
 
@@ -134,7 +134,7 @@ As an example, lets say we want to build a rule to detect and block SQL Injectio
 **info "Additional Resources"**
     For a more comprehensive discussion of common vulnerabilities for web applications, as well as how to mitigate them using AWS WAF, and other AWS services, please refer to the <a href="https://d0.awsstatic.com/whitepapers/Security/aws-waf-owasp.pdf" target="_blank">Use AWS WAF to Mitigate OWASP’s Top 10 Web Application Vulnerabilities whitepaper</a>.
 
-## WAF Rule Creation and Solutions
+**WAF Rule Creation and Solutions**
 
 In this phase, we will have a set of 6 exercises walking you through the process of building a basic mitigation rule set for common vulnerabilities. We will build these rules from scratch, so you can gain familiarity with the AWS WAF programming model and you can then write rules specific to your applications. 
 
@@ -154,26 +154,26 @@ Consider the following:
 <details>
   <summary>info "Solution"</summary>
 
-    * update the **SQL injection** condition named filterSQLi with 2 additional filters
-    	* query_string, url decode _You should have created this filter in <a href="./#console-walkthrough-creating-a-condition-and-rule">the walk through above</a>_
-	* body, html decode
-	* header, cookie, url decode
-    * create SQLi rule named matchSQLi
-    	* type regular
-        * oes match SQLi condition: filterSQLi
-    * create **Cross-site scripting** condition named filterXSS with 4 filters
-        * query_string, url decode
-        * body, html decode
-        * body, url decode
-        * header, cookie, url decode
-    * create a **String and regex matching** _String match_ condition named filterXSSPathException with 1 filter. _This demonstrates how to add an expception for the XSS rule_ 
-	 * uri, starts with, no transform, _/reportBuilder/Editor.aspx_
-    * create a rule named matchXSS
-        * type regular
-        * does match XSS condition: filterXSS
-        * does not match string match condition: filterXSSPathException
-    * add rules to Web ACL
-    *  Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
+	1. Update the **SQL injection** condition named filterSQLi with 2 additional filters
+		- query_string, url decode _You should have created this filter in <a href="./#console-walkthrough-creating-a-condition-and-rule">the walk through above</a>_
+		- body, html decode
+		- header, cookie, url decode
+	2. Create SQLi rule named matchSQLi
+		- type regular
+		- does match SQLi condition: filterSQLi
+	3. Create Cross-site scripting condition named filterXSS with 4 filters
+		- query_string, url decode
+		- body, html decode
+		- body, url decode
+		- header, cookie, url decode
+	4. Create a **String and regex matching** _String match_ condition named filterXSSPathException with 1 filter. _This demonstrates how to add an expception for the XSS rule_ 
+		- uri, starts with, no transform, _/reportBuilder/Editor.aspx_
+	5. Create a rule named matchXSS
+		- type regular
+		- does match XSS condition: filterXSS
+		- does not match string match condition: filterXSSPathException
+	6. Add rules to Web ACL
+	7. Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
    </details>
 
 **2. Enforce Request Hygiene**
@@ -189,73 +189,78 @@ Build rules that ensure the requests your application ends up processing are val
 <details>
   <summary>info "Solution"</summary>
 	
-    1.	create **String and regex matching** _String match_ type condition named filterFormProcessor with 1 filter
-        1.	uri, starts with, no transform, _/form.php_
-    2.	create string match condition named filterPOSTMethod with 1 filter
-        1.	uri, exactly matches, no transform, _/form.php_
-    3.	create **String and regex matching** _Regex match_ condition named filterCSRFToken with 1 filter
-        1.	header x-csrf-token (_type in manually_), url decode, matches pattern: _^[0-9a-f]{40}$_
-    4.	create rule named matchCSRF
-        1.	type regular
-        2.	does match string condition: filterFormProcessor
-        3.	does match string condition: filterPOSTMethod
-        4.	does not match regex match condition: filterCSRFToken
-    5.	add rules to Web ACL
-    6.  Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
+	1. create "String and regex matching" _String match_ type condition named filterFormProcessor with 1 filter
+		- uri, starts with, no transform, _/form.php_
+	2. create string match condition named filterPOSTMethod with 1 filter
+		- uri, exactly matches, no transform, _/form.php_
+	3. create "String and regex matching" _Regex match_ condition named filterCSRFToken with 1 filter
+		- header x-csrf-token (_type in manually_), url decode, matches pattern: _^[0-9a-f]{40}$_
+	4. create rule named matchCSRF
+		- type regular
+		- does match string condition: filterFormProcessor
+		- does match string condition: filterPOSTMethod
+		- does not match regex match condition: filterCSRFToken
+	5. add rules to Web ACL
+	6. Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
  </details>
 
-### 3. Mitigate File Inclusion & Path Traversal
+#**3. Mitigate File Inclusion & Path Traversal**
 
 Use the string and regex matching conditions to build rules that block specific patterns indicative of unwanted path traversal or file inclusion.
 
 Consider the following:
 
-- Can end users browse the directory structure of your web folders? Do you have directory indexes enabled?
-- Is your application (or any dependency components) use input parameters in filesystem or remote URL references? 
-- Do you adequately lock down access so input paths cannot be manipulated?
-- What considerations do you need to account for in regards to false positives (directory traversal signature patterns)?  
+* Can end users browse the directory structure of your web folders? Do you have directory indexes enabled?
+* Is your application (or any dependency components) use input parameters in filesystem or remote URL references? 
+* Do you adequately lock down access so input paths cannot be manipulated?
+* What considerations do you need to account for in regards to false positives (directory traversal signature patterns)?  
 
 Build rules that ensure the relevant HTTP request components used for input into paths do not contain known path traversal patterns.
 
-??? info "Solution"
-    1.	create a **String and regex matching** _String match_ type condition named filterTraversal with 3 filters
-        1. uri, starts with, url_decode, _/include_
-        2. query_string, contains, url_decode, _../_
-        3. query_string, contains, url_decode, _://_
-    2.	create rule named matchTraversal
-        1. type regular
-        2. does match string condition: filterTraversal
-    3.	add rules to Web ACL
-    4.  Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
+<details>
+  <summary>info "Solution"</summary>
+	1. create a **String and regex matching** _String match_ type condition named filterTraversal with 3 filters
+		- uri, starts with, url_decode, _/include_
+		- query_string, contains, url_decode, _../_
+		- query_string, contains, url_decode, _://_
+	2. create rule named matchTraversal
+		- type regular
+		- does match string condition: filterTraversal
+	3. add rules to Web ACL
+	4. Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
+ </details>
 
-!!! info "Note About Remaining Exercises"
+**info "Note About Remaining Exercises"**
     **The remaining exercises below are optional. You should proceed to the [Verify Phase](verify.md) and come back to the content below if time permits.**
 
 ---
 
-### 4. Limit Attack Footprint (Optional)
+**4. Limit Attack Footprint (Optional)**
 
 Use the string and regex matching conditions along with geo match and IP address match conditions to build rules that limit the attack footprint against the exposed components of your application.
 
 Consider the following:
-•	Does your web application have server-side include components in the public web path?
-•	Does your web application have components at exposed paths that are not used (or dependencies have such functions)?
-•	Do you have administrative, management, status or health check paths and components that aren’t meant for end user access?
+* Does your web application have server-side include components in the public web path?
+* Does your web application have components at exposed paths that are not used (or dependencies have such functions)?
+* Do you have administrative, management, status or health check paths and components that aren’t meant for end user access?
 
 You should consider blocking access to such elements, or limiting access to known sources, either whitelisted IP addresses or geographic locations.
 
-??? info "Solution"
-    1.	create **Geo match** conditon named filterAffiliates with 1 filter
-        1.	add country US, and RO
-    2.	create **String and regex matching** _String match_ type condition named filterAdminUI with 1 filter
-        1.	uri, starts with, no transform, _/admin_
-    3.	create rule named matchAdminNotAffiliate
-        1.	type regular
-        2.	does match string condition: filterAdminUI
-        3.	does not match geo condition: filterAffiliates
-    4.	add rule to Web ACL
+<details>
+  <summary>info "Solution"</summary>
+	
+	1. create **Geo match** conditon named filterAffiliates with 1 filter
+		- add country US, and RO
+	2. create **String and regex matching** _String match_ type condition named filterAdminUI with 1 filter
+		- uri, starts with, no transform, _/admin_
+	3. create rule named matchAdminNotAffiliate
+		- type regular
+		- does match string condition: filterAdminUI
+		- does not match geo condition: filterAffiliates
+	4. add rule to Web ACL
+    </details>
 
-### 5. Detect & Mitigate Anomalies (Optional)
+**5. Detect & Mitigate Anomalies (Optional)**
 
 What constitutes an anomaly in regards to your web application? A few common anomaly patterns are:
 
