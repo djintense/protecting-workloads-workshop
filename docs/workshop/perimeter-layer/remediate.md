@@ -48,7 +48,6 @@ Web ACLs are ordered lists of rules. They are evaluated in order for each HTTP r
     **In order to illustrate the process of creating WAF conditions and rules, we will walk through the creation of the first rule in your WAF ACL.** The complete list of threats and solutions is available in the <a href="./#waf-rule-creation-and-solutions">WAF Rule Creation and Solutions</a> section.
 
 **Rule Design Considerations:**
-
 To create a rule, you have to create the relevant match conditions first. This process requires planning for effective rule building. Use the following guiding questions:
 
 * What is the intended purpose of the rule?
@@ -152,10 +151,10 @@ Consider the following:
 * How do the requirements derived from the above questions affect your solution?
 
 <details>
-  <summary>info "Solution"</summary>
+  <summary>Click to expand solution</summary>
 
-	1. Update the **SQL injection** condition named filterSQLi with 2 additional filters
-		- query_string, url decode _You should have created this filter in <a href="./#console-walkthrough-creating-a-condition-and-rule">the walk through above</a>_
+	1. Update the SQL injection condition named filterSQLi with 2 additional filters
+		- query_string, url decode _You should have created this filter in the walk through above
 		- body, html decode
 		- header, cookie, url decode
 	2. Create SQLi rule named matchSQLi
@@ -166,7 +165,7 @@ Consider the following:
 		- body, html decode
 		- body, url decode
 		- header, cookie, url decode
-	4. Create a **String and regex matching** _String match_ condition named filterXSSPathException with 1 filter. _This demonstrates how to add an expception for the XSS rule_ 
+	4. Create a "String and regex matching" _String match_ condition named filterXSSPathException with 1 filter. _This demonstrates how to add an expception for the XSS rule_ 
 		- uri, starts with, no transform, _/reportBuilder/Editor.aspx_
 	5. Create a rule named matchXSS
 		- type regular
@@ -187,7 +186,7 @@ Consider the following:
 Build rules that ensure the requests your application ends up processing are valid, conforming and valuable.
 
 <details>
-  <summary>info "Solution"</summary>
+  <summary>Click to expand solution</summary>
 	
 	1. create "String and regex matching" _String match_ type condition named filterFormProcessor with 1 filter
 		- uri, starts with, no transform, _/form.php_
@@ -218,9 +217,9 @@ Consider the following:
 Build rules that ensure the relevant HTTP request components used for input into paths do not contain known path traversal patterns.
 
 <details>
-  <summary>info "Solution"</summary>
+  <summary>Click to expand solution</summary>
 	
-	1. create a **String and regex matching** _String match_ type condition named filterTraversal with 3 filters
+	1. create a "String and regex matching" _String match_ type condition named filterTraversal with 3 filters
 		- uri, starts with, url_decode, _/include_
 		- query_string, contains, url_decode, _../_
 		- query_string, contains, url_decode, _://_
@@ -248,11 +247,11 @@ Consider the following:
 You should consider blocking access to such elements, or limiting access to known sources, either whitelisted IP addresses or geographic locations.
 
 <details>
-  <summary>info "Solution"</summary>
+  <summary>Click to expand solution</summary>
 	
-	1. create **Geo match** conditon named filterAffiliates with 1 filter
+	1. create "Geo match" conditon named filterAffiliates with 1 filter
 		- add country US, and RO
-	2. create **String and regex matching** _String match_ type condition named filterAdminUI with 1 filter
+	2. create "String and regex matching" _String match_ type condition named filterAdminUI with 1 filter
 	- uri, starts with, no transform, _/admin_
 	3. create rule named matchAdminNotAffiliate
 		- type regular
@@ -274,9 +273,9 @@ What constitutes an anomaly in regards to your web application? A few common ano
 Do you have mechanisms in place to detect such patterns? If so, can you build rules to mitigate them?
 
 <details>
-  <summary>info "Solution"</summary>
+  <summary>Click to expand solution</summary>
 	
-	1. create **String and regex match** condition named filterLoginProcessor with 1 filter
+	1. create String and regex match condition named filterLoginProcessor with 1 filter
 		- uri, starts with, no transform, _/login.php_
 	2. create rule named matchRateLogin
 		- type rate-based, 2000
@@ -299,7 +298,7 @@ Build blacklists of such actors using the relevant conditions and set up rules t
 Reputation lists can also be maintained by third parties. The AWS WAF Security Automations allow you to implement IP-based reputation lists.
 
 <details>
-  <summary>info "Solution"</summary>
+  <summary>Click to expand solution</summary>
 	
 	1. edit the IP addresses condition named WafIpBlackList
 		- add a test IP address _You can optain your current IP at <a href="https://ifconfig.co/" target="_blank">Ifconfig.co</a> The entry should follow CIDR notation. i.e. 10.10.10.10/32 for a single host._
