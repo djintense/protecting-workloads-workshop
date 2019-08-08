@@ -41,10 +41,10 @@ Web ACLs are ordered lists of rules. They are evaluated in order for each HTTP r
 
 ![How AWS WAF Works](./images/how-waf-works.png)
 
-**info "Note About Conditions and Rules"**
+**Note About Conditions and Rules**
     Conditions and rules are reusable resources within the region in which they are created.  You should consider the effects of changes to WAF conditions and rules in your organizations change control procedures.
 
-**info "Note About This Section"**
+**Note About This Section**
     **In order to illustrate the process of creating WAF conditions and rules, we will walk through the creation of the first rule in your WAF ACL.** The complete list of threats and solutions is available in the <a href="./#waf-rule-creation-and-solutions">WAF Rule Creation and Solutions</a> section.
 
 **Rule Design Considerations:**
@@ -219,6 +219,7 @@ Build rules that ensure the relevant HTTP request components used for input into
 
 <details>
   <summary>info "Solution"</summary>
+	
 	1. create a **String and regex matching** _String match_ type condition named filterTraversal with 3 filters
 		- uri, starts with, url_decode, _/include_
 		- query_string, contains, url_decode, _../_
