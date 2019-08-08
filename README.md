@@ -17,7 +17,7 @@ Welcome to Widgets LLC! You have just joined the team and your first task is to 
 
 ---
 
-***To get started, review the architecture diagram below and proceed to the [workshop site](http://protecting-workloads.awssecworkshops.com/).***
+***To get started, review the architecture diagram below and proceed to the [Lab](http://protecting-workloads.awssecworkshops.com/).***
 
 ## Workshop Architecture
 
