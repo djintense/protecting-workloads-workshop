@@ -1,6 +1,6 @@
 # Mitigating Common Web Application Attack Vectors Using AWS WAF - Remediate Phase
 
-In the previous Build Phase, you identified several vulnerabilities in your web application.
+In the previous Phase, you identified several vulnerabilities in your web application.
 You are now going to design and implement an AWS WAF ruleset to help mitigate these vulnerabilities. In this section you will do the following tasks:
 
 1. Identify the WAF ACL for your site
@@ -12,7 +12,7 @@ You are now going to design and implement an AWS WAF ruleset to help mitigate th
 
 1. If needed, go to <a href="https://console.aws.amazon.com/console/home" target="_blank">https://console.aws.amazon.com/console/home</a>. You will be redirected to the AWS Management Console dashboard on successful login:
 ![Console Home](./images/console-home.png)
-Make sure you select the appropriate AWS Region when working in the AWS Management Console (top right corner, on the menu bar).
+Make sure you select the Singapore  Region when working in the AWS Management Console (top right corner, on the menu bar).
 
 2. From the Management Console dashboard, navigate to the AWS WAF & Shield service console. You can do that several ways:
     - Type “waf” in the AWS services panel search box and select the resulting option
@@ -41,24 +41,24 @@ Web ACLs are ordered lists of rules. They are evaluated in order for each HTTP r
 
 ![How AWS WAF Works](./images/how-waf-works.png)
 
-!!! info "Note About Conditions and Rules"
+**info "Note About Conditions and Rules"**
     Conditions and rules are reusable resources within the region in which they are created.  You should consider the effects of changes to WAF conditions and rules in your organizations change control procedures.
 
-!!! info "Note About This Section"
+**info "Note About This Section"**
     **In order to illustrate the process of creating WAF conditions and rules, we will walk through the creation of the first rule in your WAF ACL.** The complete list of threats and solutions is available in the <a href="./#waf-rule-creation-and-solutions">WAF Rule Creation and Solutions</a> section.
 
-###Rule Design Considerations:
+**Rule Design Considerations:**
 
 To create a rule, you have to create the relevant match conditions first. This process requires planning for effective rule building. Use the following guiding questions:
 
-1.	What is the intended purpose of the rule?
-2.	What HTTP request components apply to the purpose of the rule?
-3.	Do you already have conditions targeting those request components that you can reuse? Is that desirable?
-4.	How can you define the purpose of the rule in a Boolean logic expression?
-5.	What conditions do you need to create to implement the logic?
-6.	Are any transformations relevant to my input content type?
+* What is the intended purpose of the rule?
+* What HTTP request components apply to the purpose of the rule?
+* Do you already have conditions targeting those request components that you can reuse? Is that desirable?
+* How can you define the purpose of the rule in a Boolean logic expression?
+* What conditions do you need to create to implement the logic?
+* Are any transformations relevant to my input content type?
 
-####AWS WAF Concepts:
+**AWS WAF Concepts:**
 
 The following illustration shows AWS WAF Conditions, Rules and Web ACL's.
 
@@ -68,36 +68,36 @@ The following illustration shows how AWS WAF checks the rules and performs the a
 
 ![AWS WAF Concepts](./images/web-acl-3a.png)
 
-###Example Rule Design and Creation:
+**Example Rule Design and Creation:**
 
 As an example, lets say we want to build a rule to detect and block SQL Injection in received in query strings. Let’s see how these questions help us plan the implementation of the rule. _This walkthrough will get you started with the ruleset required to mitigate the simulated threats in the workshop. It's purpose is to help you better understand the rule creation process. You will create the remaining rules from solution hints provided below._
 
-####Sample Rule purpose:
+**Sample Rule purpose:**
 
 - **Detect SQL Injection in query string, use ‘block’ action in Web ACL**
 
-####HTTP request components:
+**HTTP request components:**
 
 - **Request Method** – form input typically gets submitted using a GET HTTP request method
 - **Query String** – the SQL injection attempt is located in the query string 
 
-####Define the purpose of the rule using Boolean logic:
+**Define the purpose of the rule using Boolean logic:**
 
 - If **Query String contains suspected SQL Injection** then **block**
 
-####Sample Rule - Conditions to implement:
+**Sample Rule - Conditions to implement:**
 
 - **SQL injection Match Condition** targeting the request **Query string**
 
-####Relevant transformations:
+**Relevant transformations:**
 
 - **SQL Injection Match Condition** query strinb is URL encoded, so we will apply the **URL_DECODE** transformation.
 
-####Rules to implement:
+**Rules to implement:**
 
 - Rule with 1 predicate matching SQL injection condition
 
-##Console Walkthrough - Creating a Condition and Rule
+**Console Walkthrough - Creating a Condition and Rule**
 
 1. In the AWS WAF console, create a SQL injection condition by selecting **SQL injection** matching from the side-bar menu to the left of the console, under the **Conditions** heading.
 
@@ -109,7 +109,7 @@ As an example, lets say we want to build a rule to detect and block SQL Injectio
 ![Create String Match](./images/create-sqli-match.png)
 4. With the condition created, and any additional conditions created based on need as well, you are ready to create a rule. In the AWS WAF console, select **Rules** from the side-bar menu to the left of the console, under the **AWS WAF** heading.
 
-5\.	Click on **Create Rule**:
+5.	Click on **Create Rule**:
 
 ![Create Rule](./images/waf-rules-home.png)
 6.	Provide **matchSQLi** for the name, metric name and sect the region where you deployed the stack. Set the **rule type** to **Regular rule**.
@@ -131,14 +131,14 @@ As an example, lets say we want to build a rule to detect and block SQL Injectio
 
 13\. Click **Update** to persist the changes.
 
-!!! info "Additional Resources"
+**info "Additional Resources"**
     For a more comprehensive discussion of common vulnerabilities for web applications, as well as how to mitigate them using AWS WAF, and other AWS services, please refer to the <a href="https://d0.awsstatic.com/whitepapers/Security/aws-waf-owasp.pdf" target="_blank">Use AWS WAF to Mitigate OWASP’s Top 10 Web Application Vulnerabilities whitepaper</a>.
 
 ## WAF Rule Creation and Solutions
 
 In this phase, we will have a set of 6 exercises walking you through the process of building a basic mitigation rule set for common vulnerabilities. We will build these rules from scratch, so you can gain familiarity with the AWS WAF programming model and you can then write rules specific to your applications. 
 
-!!! info "Note About Exercise Solutions"
+**info "Note About Exercise Solutions"**
     For the exercises below, you will find the high level description and solution configuration for your web ACL. You can test your ACL ruleset at any time using the Red Team Host. For AWS sponsored event, you can also view test results on the <a href="http://waflabdash.awssecworkshops.com/" target="_blank">WAF Lab Dashboard</a>.
 
 ### 1. SQL Injection & Cross Site Scripting Mitigation
@@ -146,35 +146,37 @@ In this phase, we will have a set of 6 exercises walking you through the process
 Use the SQL injection, cross-site scripting, as well as string and regex matching conditions to build rules that mitigate injection attacks and cross site scripting attacks.
 
 Consider the following:
-- How does your web application accept end-user input (whether directly or indirectly). Which HTTP request components does that input get inserted into?
-- What kind of content encoding considerations do you need to factor in for the input format?
-- What considerations do you need to account for in regards to false positives? For example, does your application legitimately need to accept SQL statements as input?
+* How does your web application accept end-user input (whether directly or indirectly). Which HTTP request components does that input get inserted into?
+* What kind of content encoding considerations do you need to factor in for the input format?
+* What considerations do you need to account for in regards to false positives? For example, does your application legitimately need to accept SQL statements as input?
+* How do the requirements derived from the above questions affect your solution?
 
-How do the requirements derived from the above questions affect your solution?
+<details>
+  <summary>info "Solution"</summary>
 
-??? info "Solution"
-    1.	update the **SQL injection** condition named filterSQLi with 2 additional filters
-        1. query_string, url decode _You should have created this filter in <a href="./#console-walkthrough-creating-a-condition-and-rule">the walk through above</a>_
-        2. body, html decode
-        3. header, cookie, url decode
-    2.  create SQLi rule named matchSQLi
-    	1. type regular
-        2. does match SQLi condition: filterSQLi
-    3.	create **Cross-site scripting** condition named filterXSS with 4 filters
-        1. query_string, url decode
-        2. body, html decode
-        3. body, url decode
-        4. header, cookie, url decode
-    4.	create a **String and regex matching** _String match_ condition named filterXSSPathException with 1 filter. _This demonstrates how to add an expception for the XSS rule_ 
-	    1. uri, starts with, no transform, _/reportBuilder/Editor.aspx_
-    5.	create a rule named matchXSS
-        1. type regular
-        2. does match XSS condition: filterXSS
-        3. does not match string match condition: filterXSSPathException
-    6.	add rules to Web ACL
-    7.  Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
+    * update the **SQL injection** condition named filterSQLi with 2 additional filters
+    	* query_string, url decode _You should have created this filter in <a href="./#console-walkthrough-creating-a-condition-and-rule">the walk through above</a>_
+	* body, html decode
+	* header, cookie, url decode
+    * create SQLi rule named matchSQLi
+    	* type regular
+        * oes match SQLi condition: filterSQLi
+    * create **Cross-site scripting** condition named filterXSS with 4 filters
+        * query_string, url decode
+        * body, html decode
+        * body, url decode
+        * header, cookie, url decode
+    * create a **String and regex matching** _String match_ condition named filterXSSPathException with 1 filter. _This demonstrates how to add an expception for the XSS rule_ 
+	 * uri, starts with, no transform, _/reportBuilder/Editor.aspx_
+    * create a rule named matchXSS
+        * type regular
+        * does match XSS condition: filterXSS
+        * does not match string match condition: filterXSSPathException
+    * add rules to Web ACL
+    *  Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
+   </details>
 
-### 2. Enforce Request Hygiene
+**2. Enforce Request Hygiene**
 
 Use the string and regex matching, size constraints and IP address match conditions to build rules that block non-conforming or low value HTTP requests.
 
@@ -184,7 +186,9 @@ Consider the following:
 
 Build rules that ensure the requests your application ends up processing are valid, conforming and valuable.
 
-??? info "Solution"
+<details>
+  <summary>info "Solution"</summary>
+	
     1.	create **String and regex matching** _String match_ type condition named filterFormProcessor with 1 filter
         1.	uri, starts with, no transform, _/form.php_
     2.	create string match condition named filterPOSTMethod with 1 filter
@@ -198,6 +202,7 @@ Build rules that ensure the requests your application ends up processing are val
         4.	does not match regex match condition: filterCSRFToken
     5.	add rules to Web ACL
     6.  Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
+ </details>
 
 ### 3. Mitigate File Inclusion & Path Traversal
 
