@@ -57,7 +57,7 @@ To create a rule, you have to create the relevant match conditions first. This p
 * What conditions do you need to create to implement the logic?
 * Are any transformations relevant to my input content type?
 
-**AWS WAF Concepts:**
+## AWS WAF Concepts:
 
 The following illustration shows AWS WAF Conditions, Rules and Web ACL's.
 
@@ -96,7 +96,7 @@ As an example, lets say we want to build a rule to detect and block SQL Injectio
 
 - Rule with 1 predicate matching SQL injection condition
 
-**Console Walkthrough - Creating a Condition and Rule**
+## Console Walkthrough - Creating a Condition and Rule
 
 * In the AWS WAF console, create a SQL injection condition by selecting **SQL injection** matching from the side-bar menu to the left of the console, under the **Conditions** heading.
 
@@ -133,14 +133,14 @@ As an example, lets say we want to build a rule to detect and block SQL Injectio
 **Additional Resources**
     For a more comprehensive discussion of common vulnerabilities for web applications, as well as how to mitigate them using AWS WAF, and other AWS services, please refer to the <a href="https://d0.awsstatic.com/whitepapers/Security/aws-waf-owasp.pdf" target="_blank">Use AWS WAF to Mitigate OWASP’s Top 10 Web Application Vulnerabilities whitepaper</a>.
 
-**WAF Rule Creation and Solutions**
+## WAF Rule Creation and Solutions
 
 In this phase, we will have a set of 6 exercises walking you through the process of building a basic mitigation rule set for common vulnerabilities. We will build these rules from scratch, so you can gain familiarity with the AWS WAF programming model and you can then write rules specific to your applications. 
 
 **Note About Exercise Solutions"**
     For the exercises below, you will find the high level description and solution configuration for your web ACL. You can test your ACL ruleset at any time using the Red Team Host. For AWS sponsored event, you can also view test results on the <a href="http://waflabdash.awssecworkshops.com/" target="_blank">WAF Lab Dashboard</a>.
 
-**1. SQL Injection & Cross Site Scripting Mitigation**
+### 1. SQL Injection & Cross Site Scripting Mitigation
 
 Use the SQL injection, cross-site scripting, as well as string and regex matching conditions to build rules that mitigate injection attacks and cross site scripting attacks.
 
@@ -175,7 +175,7 @@ Consider the following:
 	7. Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
    </details>
 
-**2. Enforce Request Hygiene**
+### 2. Enforce Request Hygiene
 
 Use the string and regex matching, size constraints and IP address match conditions to build rules that block non-conforming or low value HTTP requests.
 
@@ -203,7 +203,7 @@ Build rules that ensure the requests your application ends up processing are val
 	6. Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
  </details>
 
-**3. Mitigate File Inclusion & Path Traversal**
+### 3. Mitigate File Inclusion & Path Traversal
 
 Use the string and regex matching conditions to build rules that block specific patterns indicative of unwanted path traversal or file inclusion.
 
@@ -235,7 +235,7 @@ Build rules that ensure the relevant HTTP request components used for input into
 
 ---
 
-**4. Limit Attack Footprint (Optional)**
+### 4. Limit Attack Footprint (Optional)
 
 Use the string and regex matching conditions along with geo match and IP address match conditions to build rules that limit the attack footprint against the exposed components of your application.
 
@@ -260,7 +260,7 @@ You should consider blocking access to such elements, or limiting access to know
 	4. add rule to Web ACL
 </details>
 
-**5. Detect & Mitigate Anomalies (Optional)**
+### 5. Detect & Mitigate Anomalies (Optional)
 
 What constitutes an anomaly in regards to your web application? A few common anomaly patterns are:
 
