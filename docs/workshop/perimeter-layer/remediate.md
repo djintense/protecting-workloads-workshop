@@ -99,49 +99,49 @@ As an example, lets say we want to build a rule to detect and block SQL Injectio
 
 **Console Walkthrough - Creating a Condition and Rule**
 
-1. In the AWS WAF console, create a SQL injection condition by selecting **SQL injection** matching from the side-bar menu to the left of the console, under the **Conditions** heading.
+* In the AWS WAF console, create a SQL injection condition by selecting **SQL injection** matching from the side-bar menu to the left of the console, under the **Conditions** heading.
 
-2.	Click on **Create Condition**:
+* Click on **Create Condition**:
 
 ![WAF Condition Home](./images/waf-condition-home.png)
-3.	Provide **filterSQLi** for the **Name** and select the region where you deployed the stack. Add a filter (pattern) to the condition. Set the **Part of the request to filter on** to **Query string** and set the **Transformation** to **URL decode**. Click **Add filter** and then click **Create**.
+* Provide **filterSQLi** for the **Name** and select the region where you deployed the stack. Add a filter (pattern) to the condition. Set the **Part of the request to filter on** to **Query string** and set the **Transformation** to **URL decode**. Click **Add filter** and then click **Create**.
 
 ![Create String Match](./images/create-sqli-match.png)
-4. With the condition created, and any additional conditions created based on need as well, you are ready to create a rule. In the AWS WAF console, select **Rules** from the side-bar menu to the left of the console, under the **AWS WAF** heading.
+* With the condition created, and any additional conditions created based on need as well, you are ready to create a rule. In the AWS WAF console, select **Rules** from the side-bar menu to the left of the console, under the **AWS WAF** heading.
 
-5.	Click on **Create Rule**:
+* Click on **Create Rule**:
 
 ![Create Rule](./images/waf-rules-home.png)
-6.	Provide **matchSQLi** for the name, metric name and sect the region where you deployed the stack. Set the **rule type** to **Regular rule**.
+* Provide **matchSQLi** for the name, metric name and sect the region where you deployed the stack. Set the **rule type** to **Regular rule**.
 
 ![Create Rule Detail](./images/create-rule-detail.png)
-7.	Add a condition to the rule. For our rule example, choose “When a request” **does** (no negation) **match at least one of the filters in the SQL injection match condition**. Choose the SQL injection condition you have previously created.
+* Add a condition to the rule. For our rule example, choose “When a request” **does** (no negation) **match at least one of the filters in the SQL injection match condition**. Choose the SQL injection condition you have previously created.
 
 ![Add Conditions](./images/add-conditions.png)
-8.	Click **Add Condition** and click **Create** at the bottom of the screen.
+* Click **Add Condition** and click **Create** at the bottom of the screen.
 
-9\. Follow the steps in the <a href="./#identify-the-waf-acl-for-your-site">Identify the WAF ACL for your site</a> section above to go back to the Rules tab of your web ACL.
+* Follow the steps in the <a href="./#identify-the-waf-acl-for-your-site">Identify the WAF ACL for your site</a> section above to go back to the Rules tab of your web ACL.
 
-10\.	Click **Edit web ACL**.
+* Click **Edit web ACL**.
 ![Edit Web ACL](./images/edit-web-acl.png)
 
-11\. In the **Rules** dropdown, select your rule, and click **Add rule to web ACL**.
+* In the **Rules** dropdown, select your rule, and click **Add rule to web ACL**.
 
-12\. Reorder the rules as appropriate for your use case.
+* Reorder the rules as appropriate for your use case.
 
-13\. Click **Update** to persist the changes.
+* Click **Update** to persist the changes.
 
-**info "Additional Resources"**
+**Additional Resources**
     For a more comprehensive discussion of common vulnerabilities for web applications, as well as how to mitigate them using AWS WAF, and other AWS services, please refer to the <a href="https://d0.awsstatic.com/whitepapers/Security/aws-waf-owasp.pdf" target="_blank">Use AWS WAF to Mitigate OWASP’s Top 10 Web Application Vulnerabilities whitepaper</a>.
 
 **WAF Rule Creation and Solutions**
 
 In this phase, we will have a set of 6 exercises walking you through the process of building a basic mitigation rule set for common vulnerabilities. We will build these rules from scratch, so you can gain familiarity with the AWS WAF programming model and you can then write rules specific to your applications. 
 
-**info "Note About Exercise Solutions"**
+**Note About Exercise Solutions"**
     For the exercises below, you will find the high level description and solution configuration for your web ACL. You can test your ACL ruleset at any time using the Red Team Host. For AWS sponsored event, you can also view test results on the <a href="http://waflabdash.awssecworkshops.com/" target="_blank">WAF Lab Dashboard</a>.
 
-### 1. SQL Injection & Cross Site Scripting Mitigation
+**1. SQL Injection & Cross Site Scripting Mitigation**
 
 Use the SQL injection, cross-site scripting, as well as string and regex matching conditions to build rules that mitigate injection attacks and cross site scripting attacks.
 
@@ -204,7 +204,7 @@ Build rules that ensure the requests your application ends up processing are val
 	6. Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
  </details>
 
-#**3. Mitigate File Inclusion & Path Traversal**
+**3. Mitigate File Inclusion & Path Traversal**
 
 Use the string and regex matching conditions to build rules that block specific patterns indicative of unwanted path traversal or file inclusion.
 
@@ -230,7 +230,7 @@ Build rules that ensure the relevant HTTP request components used for input into
 	4. Re-run the WAF test script (scanner.py) from your red team host to confirm requests are blocked
  </details>
 
-**info "Note About Remaining Exercises"**
+**Note About Remaining Exercises**
     **The remaining exercises below are optional. You should proceed to the [Verify Phase](verify.md) and come back to the content below if time permits.**
 
 ---
@@ -252,55 +252,60 @@ You should consider blocking access to such elements, or limiting access to know
 	1. create **Geo match** conditon named filterAffiliates with 1 filter
 		- add country US, and RO
 	2. create **String and regex matching** _String match_ type condition named filterAdminUI with 1 filter
-		- uri, starts with, no transform, _/admin_
+	- uri, starts with, no transform, _/admin_
 	3. create rule named matchAdminNotAffiliate
 		- type regular
 		- does match string condition: filterAdminUI
 		- does not match geo condition: filterAffiliates
 	4. add rule to Web ACL
-    </details>
+</details>
 
 **5. Detect & Mitigate Anomalies (Optional)**
 
 What constitutes an anomaly in regards to your web application? A few common anomaly patterns are:
 
-- Unusually elevated volume of requests in general
-- Unusually elevated volumes of requests to specific URI paths
-- Unusually elevated levels of requests generating specific non-HTTP status 200 responses
-- Unusually elevated volumes from certain sources (IPs, geographies)
-- Usual request signatures (referrers, user agent strings, content types, etc)
+* Unusually elevated volume of requests in general
+* Unusually elevated volumes of requests to specific URI paths
+* Unusually elevated levels of requests generating specific non-HTTP status 200 responses
+* Unusually elevated volumes from certain sources (IPs, geographies)
+* Usual request signatures (referrers, user agent strings, content types, etc)
 
 Do you have mechanisms in place to detect such patterns? If so, can you build rules to mitigate them?
 
-??? info "Solution"
-    1.	create **String and regex match** condition named filterLoginProcessor with 1 filter
-        1.	uri, starts with, no transform, _/login.php_
-    2.	create rule named matchRateLogin
-        1.	type rate-based, 2000
-        2.	does match string condition: filterLoginProcessor
-        3.	does match string condition: filterPOSTMethod
-    3.	add rules to Web ACL
+<details>
+  <summary>info "Solution"</summary>
+	
+	1. create **String and regex match** condition named filterLoginProcessor with 1 filter
+		- uri, starts with, no transform, _/login.php_
+	2. create rule named matchRateLogin
+		- type rate-based, 2000
+		- does match string condition: filterLoginProcessor
+		- does match string condition: filterPOSTMethod
+	3. add rules to Web ACL
+</details>
 
 ### 6. Reputation Lists, Nuisance Requests (Optional)
 
 Reputation lists (whitelists or blacklists) are a good way to filter and stop servicing low value requests. This can reduce operating costs, and reduce exposure to attack vectors. Reputation lists can be self-maintained: lists of identifiable actors that you have determined are undesired. They can be identified any number of ways:
 
-- the source IP address
-- the user agent string
-- reuse of hijacked authorization or session tokens,
-- attempting to make requests to paths that clearly do not exist in your application but are well known vulnerable software packages (probing)
+* the source IP address
+* the user agent string
+* reuse of hijacked authorization or session tokens,
+* attempting to make requests to paths that clearly do not exist in your application but are well known vulnerable software packages (probing)
 
 Build blacklists of such actors using the relevant conditions and set up rules to match and block them. An example IP-based blacklist already exists in your sandbox environment.
 
 Reputation lists can also be maintained by third parties. The AWS WAF Security Automations allow you to implement IP-based reputation lists.
 
-??? info "Solution"
-    1.	edit the IP addresses condition named WafIpBlackList
-        1. add a test IP address _You can optain your current IP at <a href="https://ifconfig.co/" target="_blank">Ifconfig.co</a> The entry should follow CIDR notation. i.e. 10.10.10.10/32 for a single host._
-    2.	create a **String and regex matching** _String match_ condition named filterNoPath with 1 filter
-        1.	uri, starts with, no transform, _/phpmyadmin_
-    3.	Use the concepts you learned in the previous exercises to add the _filterNoPath_ condition to your Web ACL.
-
+<details>
+  <summary>info "Solution"</summary>
+	
+	1. edit the IP addresses condition named WafIpBlackList
+		- add a test IP address _You can optain your current IP at <a href="https://ifconfig.co/" target="_blank">Ifconfig.co</a> The entry should follow CIDR notation. i.e. 10.10.10.10/32 for a single host._
+	2. create a **String and regex matching** _String match_ condition named filterNoPath with 1 filter
+		- uri, starts with, no transform, _/phpmyadmin_
+	3. Use the concepts you learned in the previous exercises to add the _filterNoPath_ condition to your Web ACL.
+</details>
 ---
 
 You can now proceed to the [Verify Phase](verify.md).
