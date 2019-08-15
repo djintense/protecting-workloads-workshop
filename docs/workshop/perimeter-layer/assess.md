@@ -14,7 +14,7 @@ A CloudFormation stack has been built for you that contains a PHP website on Ama
 
 ## Look up the Stack Outputs
 
-* Go to the stack outputs and look for the website URL stored in the **albEndpoint** output value. Test access to the site by right clicking and opening in a new tab. Note the URL for your site as this will be used throughout this workshoop round.
+* Go to the stack outputs and look for the website URL stored in the **albEndpoint** output value. Test access to the site by right clicking and opening in a new tab. Note the URL for your site as this will be used throughout this workshop round.
 
 * While in the stack outputs, note the **ScannerUID** value. This Id value will be used to identify the posture of your site within the automated scanner and the associated dashboard.
 
